@@ -1,14 +1,16 @@
-import { httpClient } from "@/lib/axios/httpClient"
+"use server";
+
+import { httpClient } from "@/lib/axios/httpClient";
 
 interface IDoctor {
-  id: number,
-  name: string,
-  specialization: string,
-  experience: number,
-  rating: number
+  id: number;
+  name: string;
+  specialization: string;
+  experience: number;
+  rating: number;
 }
 
-export const getDoctors = async() => {
+export const getDoctors = async () => {
   const doctors = await httpClient.get<IDoctor[]>("/doctors");
   return doctors;
-}
+};
