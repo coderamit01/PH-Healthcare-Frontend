@@ -11,7 +11,7 @@ type AppSubmitProps = {
   disabled?: boolean;
 };
 
-export const AppSubmit = ({
+export const AppSubmitButton = ({
   isPending,
   children,
   pendingLabel = "Submiting...",
@@ -26,11 +26,10 @@ export const AppSubmit = ({
         disabled={isDisabled}
         className={cn("w-100", className)}
       >
-        {children ? (
+        {isPending ? (
           <>
-            <Loader2 className="animate-spin" aria-hidden="true">
+            <Loader2 className="animate-spin" aria-hidden="true" />
               {pendingLabel ? pendingLabel : children}
-            </Loader2>
           </>
         ) : (
           children
