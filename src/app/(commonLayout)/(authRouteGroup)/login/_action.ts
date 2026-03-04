@@ -6,7 +6,6 @@ import { setTokenInCookies } from "@/lib/tokenUtils";
 import { ApiErrorResponse } from "@/types/api.type";
 import { ILoginResponse } from "@/types/auth.type";
 import { ILoginPayload, LoginZodSchema } from "@/zod/auth.validation";
-import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { redirect } from "next/navigation";
 
 export const loginAction = async (
@@ -32,7 +31,13 @@ export const loginAction = async (
     await setTokenInCookies("better-auth.session_token", token, 24 * 60 * 60);
     redirect("/dashboard");
   } catch (error: any) {
-    if(error && typeof error === "object" && "digest" in error && typeof error.digest === "string" && error.digest.startsWith("NEXT_REDIRECT")){
+    if (
+      error &&
+      typeof error === "object" &&
+      "digest" in error &&
+      typeof error.digest === "string" &&
+      error.digest.startsWith("NEXT_REDIRECT")
+    ) {
       throw error;
     }
     return {

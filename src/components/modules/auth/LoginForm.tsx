@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { loginAction } from "@/app/(commonLayout)/(authRouteGroup)/login/_action";
@@ -13,11 +13,11 @@ import { ILoginPayload, LoginZodSchema } from "@/zod/auth.validation";
 import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
-import { AppField } from "../shared/Form/AppField";
 import { Button } from "@/components/ui/button";
 import { Eye, EyeOff } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AppSubmitButton } from "../shared/Form/AppSubmitButton";
+import { AppField } from "../shared/form/AppField";
+import { AppSubmitButton } from "../shared/form/AppSubmitButton";
 
 export const LoginForm = () => {
   const [serverError, setServerError] = useState<string | null>(null);
@@ -57,29 +57,25 @@ export const LoginForm = () => {
           method="POST"
           action="#"
           noValidate
-          onSubmit={
-            (e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              form.handleSubmit();
-            }
-          }
-          className="space-y-1.5"
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            form.handleSubmit();
+          }}
+          className="space-y-3"
         >
           <form.Field
             name="email"
             validators={{ onChange: LoginZodSchema.shape.email }}
           >
-            {
-              (field) => (
-                <AppField
-                  field={field}
-                  type="email"
-                  label="Email"
-                  placeholder="Your Email"
-                />
-              )
-            }
+            {(field) => (
+              <AppField
+                field={field}
+                type="email"
+                label="Email"
+                placeholder="Your Email"
+              />
+            )}
           </form.Field>
           <form.Field
             name="password"
@@ -92,30 +88,37 @@ export const LoginForm = () => {
                 label="Password"
                 placeholder="Your Password"
                 append={
-                  <Button type="button"
+                  <Button
+                    type="button"
                     variant="ghost"
                     size="icon"
                     onClick={() => setShowPassword((value) => !value)}
                     className="z-50 cursor-pointer"
                   >
-                    {
-                      showPassword ? <EyeOff className="size-4" aria-hidden="true" /> : <Eye className="size-4" aria-hidden="true" />
-                    }
+                    {showPassword ? (
+                      <EyeOff className="size-4" aria-hidden="true" />
+                    ) : (
+                      <Eye className="size-4" aria-hidden="true" />
+                    )}
                   </Button>
                 }
               />
             )}
           </form.Field>
-          {
-            serverError && (
-              <Alert variant={"destructive"}>
-                <AlertDescription>{serverError}</AlertDescription>
-              </Alert>
-            )
-          }
-          <form.Subscribe selector={(s) => [s.canSubmit, s.isSubmitting] as const}>
-           {([canSubmit, isSubmitting]) => (
-               <AppSubmitButton isPending={isSubmitting || isPending} pendingLabel="Loggin in.." disabled={!canSubmit}>
+          {serverError && (
+            <Alert variant={"destructive"}>
+              <AlertDescription>{serverError}</AlertDescription>
+            </Alert>
+          )}
+          <form.Subscribe
+            selector={(s) => [s.canSubmit, s.isSubmitting] as const}
+          >
+            {([canSubmit, isSubmitting]) => (
+              <AppSubmitButton
+                isPending={isSubmitting || isPending}
+                pendingLabel="Loggin in.."
+                disabled={!canSubmit}
+              >
                 Log In
               </AppSubmitButton>
             )}

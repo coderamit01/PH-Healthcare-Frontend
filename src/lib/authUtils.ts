@@ -1,56 +1,95 @@
+export type UserRole = "SUPER_ADMIN" | "ADMIN" | "DOCTOR" | "PATIENT";
 
-export type UserRole = 'SUPER_ADMIN' | 'ADMIN' | 'DOCTOR' | 'PATIENT';
-
-export const authRoutes = ['/login', '/register', '/forgot-password', '/reset-password', '/verify-email'];
+export const authRoutes = [
+  "/login",
+  "/register",
+  "/forgot-password",
+  "/reset-password",
+  "/verify-email",
+];
 
 export const isAuthRoute = (path: string) => {
-  return authRoutes.some((route: string) => path.includes(route))
-}
+  return authRoutes.some((route: string) => path.includes(route));
+};
 
 export type RouteConfig = {
   exact: string[];
   pattern: RegExp[];
-}
+};
 
 export const commonProtectedRoutes: RouteConfig = {
   exact: ["/change-password", "/my-profile"],
-  pattern: []
-}
+  pattern: [],
+};
 
 export const doctorProtectedRoutes: RouteConfig = {
   exact: [],
-  pattern: [/^\/doctor\/dashboard/]
-}
+  pattern: [/^\/doctor\/dashboard/],
+};
 
 export const adminProtectedRoutes: RouteConfig = {
   exact: [],
-  pattern: [/^\/admin\/dashboard/]
-}
+  pattern: [/^\/admin\/dashboard/],
+};
 
 export const patientProtectedRoutes: RouteConfig = {
-  exact: ['/payment/success'],
-  pattern: [/^\/dashboard/]
-}
+  exact: ["/payment/success"],
+  pattern: [/^\/dashboard/],
+};
 
 export const isRouteMatches = (pathname: string, routes: RouteConfig) => {
   if (routes.exact.includes(pathname)) {
     return true;
   }
   return routes.pattern.some((pattern: RegExp) => pattern.test(pathname));
-}
+};
 
-export const getRouteOwner = (pathname: string): 'SUPER_ADMIN' | 'ADMIN' | 'DOCTOR' | 'PATIENT' | 'COMMON' | null => {
+export const getRouteOwner = (
+  pathname: string,
+): "SUPER_ADMIN" | "ADMIN" | "DOCTOR" | "PATIENT" | "COMMON" | null => {
   if (isRouteMatches(pathname, doctorProtectedRoutes)) {
-    return 'DOCTOR';
+    return "DOCTOR";
   }
   if (isRouteMatches(pathname, adminProtectedRoutes)) {
-    return 'ADMIN';
+    return "ADMIN";
   }
   if (isRouteMatches(pathname, patientProtectedRoutes)) {
-    return 'PATIENT';
+    return "PATIENT";
   }
   if (isRouteMatches(pathname, commonProtectedRoutes)) {
-    return 'COMMON';
+    return "COMMON";
   }
   return null;
-}
+};
+
+export const getDefaultDashboardRoute = (role: UserRole) => {
+  switch (role) {
+    case "SUPER_ADMIN":
+      return "/admin/dashboard";
+    case "ADMIN":
+      return "/admin/dashboard";
+    case "DOCTOR":
+      return "/doctor/dashboard";
+    case "PATIENT":
+      return "/dashboard";
+    default:
+      return "/";
+  }
+};
+
+export const isValidRedirectForRole = (
+  redirectpath: string,
+  role: UserRole,
+) => {
+  const unifyAdminSuperAdminRole = role === "SUPER_ADMIN" ? "ADMIN" : role;
+  role = unifyAdminSuperAdminRole;
+  const routeOwner = getRouteOwner(redirectpath);
+
+  if (routeOwner === null || routeOwner === "COMMON") {
+    return true;
+  }
+  if (routeOwner === role) {
+    return true;
+  }
+  return false;
+};
