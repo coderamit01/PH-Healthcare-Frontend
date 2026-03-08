@@ -24,7 +24,7 @@ export const AppSubmitButton = ({
       <Button
         type="submit"
         disabled={isDisabled}
-        className={cn("w-100", className)}
+        className={cn("w-100 cursor-pointer", className)}
       >
         {isPending ? (
           <>
