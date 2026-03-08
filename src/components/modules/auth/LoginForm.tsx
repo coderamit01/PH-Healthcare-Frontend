@@ -1,49 +1,58 @@
-"use client";
-
+"use client"
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { loginAction } from "@/app/(commonLayout)/(authRouteGroup)/login/_action";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { ILoginPayload, LoginZodSchema } from "@/zod/auth.validation";
 import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { Eye, EyeOff } from "lucide-react";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AppField } from "../shared/form/AppField";
-import { AppSubmitButton } from "../shared/form/AppSubmitButton";
+import Link from "next/link";
+import { useState } from "react";
+import { AppField } from "../shared/Form/AppField";
+import { AppSubmitButton } from "../shared/Form/AppSubmitButton";
 
-export const LoginForm = () => {
+interface LoginFormProps {
+  redirectPath?: string;
+}
+
+const LoginForm = ({ redirectPath }: LoginFormProps) => {
+  // const queryClient = useQueryClient();
+
   const [serverError, setServerError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
 
   const { mutateAsync, isPending } = useMutation({
-    mutationFn: (payload: ILoginPayload) => loginAction(payload),
-  });
+    mutationFn: (payload: ILoginPayload) => loginAction(payload, redirectPath),
+  })
+
   const form = useForm({
     defaultValues: {
       email: "",
       password: "",
     },
+
     onSubmit: async ({ value }) => {
       setServerError(null);
       try {
-        const result = (await mutateAsync(value)) as any;
+        const result = await mutateAsync(value) as any;
+
         if (!result.success) {
-          setServerError(result.message || "Login Failed");
+          setServerError(result.message || "Login failed");
           return;
         }
       } catch (error: any) {
-        setServerError(`Login Failed:  ${error.message}`);
+
+        if(error && typeof error === "object" && "digest" in error && typeof error.digest === "string" && error.digest.startsWith("NEXT_REDIRECT")){
+            throw error;
+        }
+
+        console.log(`Login failed: ${error.message}`);
+        setServerError(`Login failed: ${error.message}`);
       }
-    },
-  });
+    }
+  })
   return (
     <Card className="w-full max-w-md mx-auto shadow-md">
       <CardHeader className="text-center">
@@ -52,6 +61,7 @@ export const LoginForm = () => {
           Please enter your credentials to log in.
         </CardDescription>
       </CardHeader>
+
       <CardContent>
         <form
           method="POST"
@@ -62,7 +72,7 @@ export const LoginForm = () => {
             e.stopPropagation();
             form.handleSubmit();
           }}
-          className="space-y-3"
+          className="space-y-4"
         >
           <form.Field
             name="email"
@@ -71,12 +81,13 @@ export const LoginForm = () => {
             {(field) => (
               <AppField
                 field={field}
-                type="email"
                 label="Email"
-                placeholder="Your Email"
+                type="email"
+                placeholder="Enter your email"
               />
             )}
           </form.Field>
+
           <form.Field
             name="password"
             validators={{ onChange: LoginZodSchema.shape.password }}
@@ -84,16 +95,18 @@ export const LoginForm = () => {
             {(field) => (
               <AppField
                 field={field}
-                type={showPassword ? "text" : "password"}
                 label="Password"
-                placeholder="Your Password"
+                type={showPassword ? "text" : "password"}
+                // type="text"
+                placeholder="Enter your password"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+                className="cursor-pointer"
                 append={
                   <Button
                     type="button"
+                    onClick={() => setShowPassword((value) => !value)}
                     variant="ghost"
                     size="icon"
-                    onClick={() => setShowPassword((value) => !value)}
-                    className="z-50 cursor-pointer"
                   >
                     {showPassword ? (
                       <EyeOff className="size-4" aria-hidden="true" />
@@ -105,26 +118,47 @@ export const LoginForm = () => {
               />
             )}
           </form.Field>
+
+          <div className="text-right mt-2">
+            <Link
+              href="/forgot-password"
+              className="text-sm text-primary hover:underline underline-offset-4"
+            >
+              Forgot password?
+            </Link>
+          </div>
+
           {serverError && (
             <Alert variant={"destructive"}>
               <AlertDescription>{serverError}</AlertDescription>
             </Alert>
           )}
+
           <form.Subscribe
             selector={(s) => [s.canSubmit, s.isSubmitting] as const}
           >
             {([canSubmit, isSubmitting]) => (
-              <AppSubmitButton
-                isPending={isSubmitting || isPending}
-                pendingLabel="Loggin in.."
-                disabled={!canSubmit}
-              >
+              <AppSubmitButton isPending={isSubmitting || isPending} pendingLabel="Logging In...." disabled={!canSubmit}>
                 Log In
               </AppSubmitButton>
             )}
           </form.Subscribe>
         </form>
       </CardContent>
+
+      <CardFooter className="justify-center border-t pt-4">
+        <p className="text-sm text-muted-foreground">
+          Don&apos;t have an account?{" "}
+          <Link
+            href="/register"
+            className="text-primary font-medium hover:underline underline-offset-4"
+          >
+            Sign Up for an account
+          </Link>
+        </p>
+      </CardFooter>
     </Card>
   );
-};
+}
+
+export default LoginForm

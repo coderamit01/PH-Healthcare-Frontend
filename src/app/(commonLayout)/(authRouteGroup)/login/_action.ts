@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { getDefaultDashboardRoute, isValidRedirectForRole, UserRole } from "@/lib/authUtils";
 import { httpClient } from "@/lib/axios/httpClient";
@@ -25,6 +25,7 @@ export const loginAction = async (payload : ILoginPayload, redirectPath ?: strin
 
         const { accessToken, refreshToken, token, user} = response.data;
         const {role, emailVerified, needPasswordChange, email} = user;
+        console.log(user);
         await setTokenInCookies("accessToken", accessToken);
         await setTokenInCookies("refreshToken", refreshToken);
         await setTokenInCookies("better-auth.session_token", token, 24 * 60 * 60); // 1 day in seconds
