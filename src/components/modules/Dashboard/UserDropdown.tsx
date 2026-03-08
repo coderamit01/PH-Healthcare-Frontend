@@ -1,7 +1,5 @@
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Bell } from "lucide-react"
 
 
 const UserDropdown = () => {

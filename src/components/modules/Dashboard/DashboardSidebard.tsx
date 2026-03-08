@@ -1,7 +1,12 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { getNavItemsByRole } from "@/lib/navItems";
+import { getUserInfo } from "@/services/auth.service";
+import { navSection } from "@/types/dashboard.type";
 
 
-const DashboardSidebard = () => {
+const DashboardSidebard = async() => {
+  const userInfo = await getUserInfo();
+  const navItem: navSection[] = getNavItemsByRole(userInfo.role);
   return (
     <div className="hidden md:flex flex-col h-full w-64 border-r bg-card overflow-y-auto ps-2 pb-2">
       <div className="h-13 border-b flex justify-center items-center">
