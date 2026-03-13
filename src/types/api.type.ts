@@ -13,7 +13,12 @@ export interface PaginationMeta {
   totalPages: number;
 }
 
+
 export interface ApiErrorResponse {
   success: boolean,
   message: string,
+}
+export interface ApiSuccessRedirectResponse {
+  success: true;
+  redirectTo: string;
 }

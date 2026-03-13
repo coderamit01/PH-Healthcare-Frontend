@@ -1,3 +1,9 @@
+export interface LoginApiResponse {
+  success: boolean
+  message?: string
+  data?: ILoginResponse
+}
+
 export interface ILoginResponse {
   token: string,
   accessToken: string,
