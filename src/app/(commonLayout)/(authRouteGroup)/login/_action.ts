@@ -40,8 +40,6 @@ export const loginAction = async (payload : ILoginPayload, redirectPath ?: strin
         }else{
             // redirect(redirectPath || "/dashboard");
             const targetPath = redirectPath && isValidRedirectForRole(redirectPath, role as UserRole) ? redirectPath : getDefaultDashboardRoute(role as UserRole);
-
-            
             redirect(targetPath);
         }
         

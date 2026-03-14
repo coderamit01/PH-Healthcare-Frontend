@@ -6,7 +6,7 @@ import { UserInfo } from "@/types/user.type";
 import { DashboardSidebarContent } from "./DashboardSidebarContent";
 
 
-const DashboardSidebard = async () => {
+const DashboardSidebar = async () => {
   const userInfo: UserInfo = await getUserInfo();
   const navItems: navSection[] = getNavItemsByRole(userInfo.role);
   const dashboardHome: string = getDefaultDashboardRoute(userInfo.role);
@@ -16,4 +16,4 @@ const DashboardSidebard = async () => {
   );
 };
 
-export default DashboardSidebard;
+export default DashboardSidebar;

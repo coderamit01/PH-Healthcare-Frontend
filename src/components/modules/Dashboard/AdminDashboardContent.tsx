@@ -1,3 +1,5 @@
+"use client"
+
 import { getDashboardData } from "@/services/dashboard.service"
 import { ApiResponse } from "@/types/api.type"
 import { IAdminDashboardData } from "@/types/dashboard.type"

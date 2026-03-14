@@ -1,5 +1,5 @@
 import DashboardNavbar from "@/components/modules/Dashboard/DashboardNavbar";
-import DashboardSidebard from "@/components/modules/Dashboard/DashboardSidebard";
+import DashboardSidebard from "@/components/modules/Dashboard/DashboardSidebar";
 import React from "react";
 
 const RootDashboardlayout = async({ children }: { children: React.ReactNode }) => {

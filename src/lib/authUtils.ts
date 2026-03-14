@@ -63,6 +63,7 @@ export const getRouteOwner = (
 };
 
 export const getDefaultDashboardRoute = (role: UserRole) => {
+  console.log("User Role",role);
   switch (role) {
     case "SUPER_ADMIN":
       return "/admin/dashboard";

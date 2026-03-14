@@ -1,3 +1,4 @@
+"use client"
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { getIconComponent } from "@/lib/iconMapper";
@@ -63,11 +64,11 @@ export const DashboardSidebarContent = ({ dashboardHome, navItems, userInfo }: D
           }
         </nav>
       </ScrollArea>
-      <div className="flex items-center gap-2">
-        <div className="h-10 w-10 rounded-full bg-primary/40 text-sm font-semibold text-white flex items-center justify-center ">AM</div>
+      <div className="flex items-center gap-2 pb-3">
+        <div className="h-10 w-10 rounded-full bg-primary/40 text-sm font-semibold text-white flex items-center justify-center ">{userInfo.name.charAt(0).toUpperCase()}</div>
         <div className="flex flex-col flex-1">
-          <span className="text-sm font-semibold truncate">Dashboard Sidebar</span>
-          <span className="text-xs">Role</span>
+          <span className="text-sm font-semibold truncate">{userInfo.name}</span>
+          <span className="text-xs">{userInfo.role.toLocaleLowerCase().replace("_", " ")}</span>
         </div>
       </div>
     </div>

@@ -1,3 +1,5 @@
+"use client"
+
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { getDoctor } from "@/services/doctor.service"
 import { IDoctorData } from "@/types/doctor.type"

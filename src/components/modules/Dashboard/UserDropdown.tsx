@@ -1,18 +1,14 @@
-import { Button } from "@/components/ui/button"
-import { DropdownMenu, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+
+import { getUserInfo } from "@/services/auth.service";
+import { UserInfo } from "@/types/user.type";
+import UserDropdownClient from "./UserDropdownClient";
 
 
-const UserDropdown = () => {
+const UserDropdown = async () => {
+  const userInfo: UserInfo = await getUserInfo();
+
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant={"outline"} size={"icon"} className="rounded-full">
-          <span className="text-sm font-semibold">
-            {"Amit".charAt(0).toUpperCase()}
-          </span>
-        </Button>
-      </DropdownMenuTrigger>
-    </DropdownMenu>
+    <UserDropdownClient name={userInfo.name} />
   )
 }
 

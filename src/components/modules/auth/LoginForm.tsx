@@ -15,40 +15,43 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AppSubmitButton } from "../shared/Form/AppSubmitButton";
 
 interface LoginFormProps {
-    redirectPath ?: string;
+  redirectPath?: string;
 }
 
 const LoginForm = ({ redirectPath }: LoginFormProps) => {
-    // const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
 
-    const [serverError, setServerError] = useState<string | null>(null);
-    const [showPassword, setShowPassword] = useState(false);
+  const [serverError, setServerError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
 
-    const { mutateAsync , isPending} = useMutation({
-        mutationFn : (payload : ILoginPayload) => loginAction(payload, redirectPath),
-    })
+  const { mutateAsync, isPending } = useMutation({
+    mutationFn: (payload: ILoginPayload) => loginAction(payload, redirectPath),
+  })
 
-    const form = useForm({
-        defaultValues : {
-            email : "",
-            password : "",
-        },
+  const form = useForm({
+    defaultValues: {
+      email: "",
+      password: "",
+    },
 
-        onSubmit : async ({value}) => {
-            setServerError(null);
-            try {
-                const result = await mutateAsync(value) as any;
+    onSubmit: async ({ value }) => {
+      setServerError(null);
+      try {
+        const result = await mutateAsync(value) as any;
 
-                if(!result.success ){
-                    setServerError(result.message || "Login failed");
-                    return ;
-                }
-            } catch (error : any) {
-                console.log(`Login failed: ${error.message}`);
-                setServerError(`Login failed: ${error.message}`);
-            }
+        if (!result.success) {
+          setServerError(result.message || "Login failed");
+          return;
         }
-    })
+      } catch (error: any) {
+        if (error && typeof error === "object" && "digest" in error && typeof error.digest === "string" && error.digest.startsWith("NEXT_REDIRECT")) {
+          throw error;
+        }
+        console.log(`Login failed: ${error.message}`);
+        setServerError(`Login failed: ${error.message}`);
+      }
+    }
+  })
   return (
     <Card className="w-full max-w-md mx-auto shadow-md">
       <CardHeader className="text-center">
@@ -99,7 +102,7 @@ const LoginForm = ({ redirectPath }: LoginFormProps) => {
                 className="cursor-pointer"
                 append={
                   <Button
-                  type="button"
+                    type="button"
                     onClick={() => setShowPassword((value) => !value)}
                     variant="ghost"
                     size="icon"
@@ -145,13 +148,13 @@ const LoginForm = ({ redirectPath }: LoginFormProps) => {
 
       <CardFooter className="justify-center border-t pt-4">
         <p className="text-sm text-muted-foreground">
-              Don&apos;t have an account?{" "}
-            <Link
-                href="/register"
-                className="text-primary font-medium hover:underline underline-offset-4"
-            >
-                Sign Up for an account
-            </Link>
+          Don&apos;t have an account?{" "}
+          <Link
+            href="/register"
+            className="text-primary font-medium hover:underline underline-offset-4"
+          >
+            Sign Up for an account
+          </Link>
         </p>
       </CardFooter>
     </Card>
