@@ -1,58 +1,47 @@
 "use client"
 
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { getDoctor } from "@/services/doctor.service"
 import { IDoctorData } from "@/types/doctor.type"
 import { useQuery } from "@tanstack/react-query"
-import { useReactTable, getCoreRowModel, flexRender, ColumnDef } from '@tanstack/react-table'
+import DataTable from "../shared/DataTable"
+import doctorsColumns from "./doctorsColumns"
+import { getAllDoctors } from "@/services/doctor.service"
+import TestTable from "./TestTable"
 
 export const DoctorTable = () => {
-  const { data: doctorDataResponse } = useQuery({
+  const { data: doctorDataResponse, isLoading } = useQuery({
     queryKey: ['doctors'],
-    queryFn: getDoctor
+    queryFn: getAllDoctors
   })
   const { data: doctors } = doctorDataResponse! || [];
 
+  const handleView = (doctor: IDoctorData) => {
+    console.log("handle View", doctor);
+  }
 
-  const doctorColumns: ColumnDef<IDoctorData>[] = [
-    { accessorKey: 'name', header: 'Name' },
-    //   { accessorKey: "specialization", header: "Specialization" },
-    { accessorKey: "experience", header: "Experience" },
-    //   { accessorKey: "rating", header: "Rating" },
-  ]
+  const handleEdit = (doctor: IDoctorData) => {
+    console.log("handle Edit", doctor);
+  }
 
-  const { getHeaderGroups, getRowModel } = useReactTable({
-    data: doctors,
-    columns: doctorColumns,
-    getCoreRowModel: getCoreRowModel()
-  })
+  const handleDelete = (doctor: IDoctorData) => {
+    console.log("handle Delete", doctor);
+  }
 
   return (
-    <Table>
-      <TableHead>
-        {getHeaderGroups().map((hg) => (
-          <TableRow key={hg.id}>
-            {
-              hg.headers.map((header) => (
-                <TableHeader key={header.id}>
-                  {flexRender(header.column.columnDef.header, header.getContext())}
-                </TableHeader>
-              ))
-            }
-          </TableRow>
-        ))}
-      </TableHead>
-      <TableBody>
-        {getRowModel().rows.map((row) => (
-          <TableRow key={row.id}>
-            {row.getVisibleCells().map((cell) => (
-              <TableCell key={cell.id}>
-                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-              </TableCell>
-            ))}
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+    <>
+    <DataTable
+       data={doctors}
+        columns={doctorsColumns}
+        isLoading={isLoading}
+        emptyMessage="No doctors found."
+        actions={
+          {
+            onView : handleView,
+            onEdit : handleEdit,
+            onDelete : handleDelete
+          }
+        }
+    />
+    {/* <TestTable /> */}
+    </>
   )
 }

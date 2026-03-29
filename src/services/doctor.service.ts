@@ -3,7 +3,7 @@ import { httpClient } from "@/lib/axios/httpClient"
 import { IDoctorData } from "@/types/doctor.type";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export const getDoctor = async () => {
+export const getAllDoctors = async () => {
   try {
     const doctors = await httpClient.get<IDoctorData[]>("/doctors");
     return doctors;

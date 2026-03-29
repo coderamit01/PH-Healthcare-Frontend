@@ -1,3 +1,5 @@
+"use client"
+
 /* eslint-disable react-hooks/purity */
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -13,18 +15,16 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Bell } from "lucide-react"
 
-const NotificationDropdown = () => {
+interface Notification {
+  id: string,
+  title: string,
+  message: string,
+  type: "appointment" | "schedule" | "system" | "user",
+  timestamp: Date,
+  read: boolean
+}
 
-  interface Notification {
-    id: string,
-    title: string,
-    message: string,
-    type: "appointment" | "schedule" | "system" | "user",
-    timestamp: Date,
-    read: boolean
-  }
-
-  const MOCK_NOTIFICATIONS: Notification[] = [
+const MOCK_NOTIFICATIONS: Notification[] = [
     {
       id: "1",
       title: "New Appointment Scheduled",
@@ -62,6 +62,7 @@ const NotificationDropdown = () => {
     }
   ]
 
+const NotificationDropdown = () => {
   const unreadCount = MOCK_NOTIFICATIONS.filter((mock) => !mock.read).length;
 
   return (
